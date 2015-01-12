@@ -1,0 +1,75 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class Catapult : MonoBehaviour {
+	public Rigidbody pulted;
+	float windStart;
+	public float windDuration=4.0f;
+	bool isWinding=true;
+	
+	public float projectileSpeed=10f;
+	float fireStart;
+	public float fireDuration=0.7f;
+	bool isFiring=false;
+	bool canFire=true;
+
+	Transform target;
+
+	Transform arm;
+	GameObject axel;
+	
+	// Use this for initialization
+	void Start () {
+		windStart=Time.time+Random.Range(0f,windDuration);
+		isWinding=true;
+		isFiring=false;
+		arm=transform.Find("arm");
+		axel=GameObject.Find("axel");
+		target=GameObject.Find("glider").transform;
+	}
+	
+	// Update is called once per frame
+	void Update () {
+			if(Vector3.Distance(transform.position, target.position)<500){
+				if(arm.rigidbody.isKinematic){
+					if(isWinding){
+						float dt=(Time.time-windStart)/windDuration;
+						dt=1-dt;
+						arm.localRotation=Quaternion.Euler(0f, 0f, 180f*dt);
+						if(dt<0f){
+							isWinding=false;
+							isFiring=true;
+							fireStart=Time.time;
+						}
+					}
+					if(isFiring){
+						float dt=(Time.time-fireStart)/fireDuration;
+						arm.localRotation=Quaternion.Euler(0f, 0f, 180f*dt);
+						
+						if(dt>0.15 && canFire){
+							fire();
+							canFire=false;
+						}
+
+
+						if(dt>1f){
+							isFiring=false;
+							isWinding=true;
+							canFire=true;
+							windStart=Time.time;
+						}
+					}
+				}
+			axel.transform.Rotate(new Vector3(0f,0f,1f));
+			}
+			
+	}
+	
+	void fire() {
+	    pulted = (Rigidbody) Instantiate(pulted, transform.position + new Vector3(0f,4f,0f), transform.localRotation);
+	    pulted.velocity=((target.position-transform.position).normalized+new Vector3(Random.Range(1f,3f), 1.5f, 0f))*(projectileSpeed+Random.Range(0f,2f));
+		pulted.angularVelocity=new Vector3(Random.Range(0f,14f), Random.Range(0f,14f), Random.Range(0f, 15f));
+	    //ffire.Play();
+	}
+}
+

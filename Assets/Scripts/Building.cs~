@@ -1,0 +1,27 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class Building : MonoBehaviour {
+	
+	public int collisions;
+	// Use this for initialization
+	void Start () {
+
+	}
+	
+	// Update is called once per frame
+	void Update () {
+			if(collisions>2){
+					GameObject[] sub=GameObject.FindGameObjectsWithTag("destructable");
+					foreach(GameObject g in sub){
+						g.rigidbody.isKinematic=false;
+					}
+					Debug.Log("col");
+				
+			}
+	}
+	
+	void OnCollisionEnter(Collision col){
+		
+	}
+}

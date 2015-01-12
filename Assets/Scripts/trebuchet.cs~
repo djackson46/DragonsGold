@@ -1,0 +1,46 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class trebuchet : MonoBehaviour {
+	float windStart;
+	public float windDuration=4.0f;
+	bool isWinding=true;
+	
+	float fireStart;
+	public float fireDuration=0.7f;
+	bool isFiring=false;
+
+	GameObject arm;
+	
+	// Use this for initialization
+	void Start () {
+		windStart=Time.time;
+		isWinding=true;
+		arm=GameObject.Find("arm");
+	}
+	
+	// Update is called once per frame
+	void Update () {
+			float dt=(Time.time-windStart)/windDuration;
+			if(isWinding){
+				arm.transform.rotation=Quaternion.Euler(180f*dt, 0f, 0f);
+				if(dt>1f){
+					isWinding=false;
+					isFiring=true;
+					fireStart=Time.time;
+				}
+			}
+			if(isFiring){
+				float dt=(Time.time-fireStart)/fireDuration;
+				arm.transform.rotation=Quaternion.Euler(-180f*dt, 0f, 0f);
+
+				if(dt>1f){
+					isFiring=false;
+					isWinding=true;
+					windStart=Time.time;
+				}
+			}
+
+			
+	}
+}
